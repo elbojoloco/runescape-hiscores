@@ -65,12 +65,16 @@ class Player
     /**
      * Get all data (rank, level and experience) for the given skills (default all).
      *
-     * @param  array  $skills
+     * @param  array|string  $skills
      *
      * @return array|array[]
      */
-    public function stats(array $skills = [])
+    public function stats($skills = [])
     {
+        if (is_string($skills)) {
+            return $this->stats[$this->formatSkill($skills)] ?? null;
+        }
+
         if ($skills) {
             return array_intersect_key($this->stats, array_flip($this->formatSkills($skills)));
         }
