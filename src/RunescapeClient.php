@@ -73,6 +73,8 @@ class RunescapeClient
      *
      * @return \Elbojoloco\RunescapeHiscores\Player
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RsnMissingException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
      */
     public function rs3(string $rsn): Player
@@ -91,9 +93,11 @@ class RunescapeClient
      *
      * @return \Elbojoloco\RunescapeHiscores\Player
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RsnMissingException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
      */
-    public function oldschool(string $rsn)
+    public function oldschool(string $rsn): Player
     {
         $this->rsn = $rsn;
         $this->oldschool = true;
@@ -103,6 +107,8 @@ class RunescapeClient
     }
 
     /**
+     * Get the player's stats. Pass a type ("rs3" or "oldschool") and a runescape name when calling directly.
+     *
      * @param  string  $type
      * @param  string  $rsn
      *
@@ -112,7 +118,7 @@ class RunescapeClient
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
      */
-    public function get(string $type = '', string $rsn = '')
+    public function get(string $type = '', string $rsn = ''): Player
     {
         if ($type && in_array($type = strtolower(preg_replace('/\s/', '', $type)), ['rs3', 'oldschool']) && $rsn) {
             return $this->{$type}($rsn);
@@ -142,6 +148,13 @@ class RunescapeClient
         return new Player($this->rsn, $stats);
     }
 
+    /**
+     * Sends the request to the hiscores endpoint and handles HTTP errors.
+     *
+     * @return false|string[]
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
+     */
     private function sendRequest()
     {
         $response = Zttp::get($this->requestUrl());
@@ -157,21 +170,41 @@ class RunescapeClient
         return explode("\n", $response->body());
     }
 
-    private function hiscore()
+    /**
+     * Get the hiscore endpoint to use.
+     *
+     * @return string
+     */
+    private function hiscore(): string
     {
         return $this->oldschool ? 'hiscore_oldschool' : 'hiscore';
     }
 
-    private function requestUrl()
+    /**
+     * Get the full request URL with filled parameters.
+     *
+     * @return string
+     */
+    private function requestUrl(): string
     {
         return vsprintf('http://services.runescape.com/m=%s/index_lite.ws?player=%s', [$this->hiscore(), $this->rsn]);
     }
 
+    /**
+     * Get the skills array based on hiscores type.
+     *
+     * @return array|string[]
+     */
     private function skills()
     {
         return $this->oldschool ? $this->osrsSkills : array_replace($this->osrsSkills, $this->rs3Skills);
     }
 
+    /**
+     * Get the hiscore type. Returns false when no type has been set.
+     *
+     * @return bool|string
+     */
     private function type()
     {
         if ($this->rs3) {
