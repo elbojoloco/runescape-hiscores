@@ -2,6 +2,7 @@
     "name": "elbojoloco/runescape-hiscores",
     "description": "A minimalistic wrapper for communicating with the OSRS and RS3 hiscores.",
     "type": "library",
+    "version": "0.1.0",
     "require": {
         "php": "^7.1.0",
         "kitetail/zttp": "^0.6.0"
