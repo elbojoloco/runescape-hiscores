@@ -78,6 +78,14 @@ class Player
         return $this->stats;
     }
 
+    /**
+     * Get a stat or multiple stats from the stats array. Is flexible with skill names and spacing, but won't cover spelling mistakes.
+     *
+     * @param  string  $metric
+     * @param  array|string  $skills
+     *
+     * @return array|string
+     */
     private function getStat(string $metric, $skills)
     {
         if (! is_array($skills)) {
@@ -94,7 +102,14 @@ class Player
         return count($result) === 1 ? array_shift($result) : $result;
     }
 
-    private function formatSkills($skills)
+    /**
+     * Formats every passed skill's name.
+     *
+     * @param  array  $skills
+     *
+     * @return array
+     */
+    private function formatSkills(array $skills): array
     {
         $skills = array_map([$this, 'formatSkill'], $skills);
 
@@ -103,8 +118,25 @@ class Player
         });
     }
 
-    private function formatSkill($skill)
+    /**
+     * Formats a skill name to match correct format.
+     * E.g.:
+     * "Hit Points" -> "Hitpoints"
+     * " attack " -> "Attack"
+     *
+     * @param  string  $skill
+     *
+     * @return string
+     */
+    private function formatSkill(string $skill): string
     {
-        return ucfirst(strtolower(preg_replace('/\s/', '', $skill)));
+        // First, remove all whitespace from the skill name.
+        // Then, lowercase the entire skill.
+        // Lastly, uppercase the first letter, to match the expected Skill key.
+        return ucfirst(
+            strtolower(
+                preg_replace('/\s/', '', $skill)
+            )
+        );
     }
 }

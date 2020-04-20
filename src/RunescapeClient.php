@@ -120,7 +120,7 @@ class RunescapeClient
      */
     public function get(string $type = '', string $rsn = ''): Player
     {
-        if ($type && in_array($type = strtolower(preg_replace('/\s/', '', $type)), ['rs3', 'oldschool']) && $rsn) {
+        if ([$type, $rsn] = $this->formatTypeAndRsn($type, $rsn)) {
             return $this->{$type}($rsn);
         }
 
@@ -216,5 +216,30 @@ class RunescapeClient
         }
 
         return false;
+    }
+
+    /**
+     * Validate and format the hiscore type. If successful, returns the formatted type and given rsn.
+     *
+     * @param  string  $type
+     * @param  string  $rsn
+     *
+     * @return array|bool
+     */
+    private function formatTypeAndRsn(string $type, string $rsn)
+    {
+        if (! $type || ! $rsn) {
+            return false;
+        }
+
+        $type = strtolower(
+            preg_replace('/\s/', '', $type)
+        );
+
+        if (! in_array($type, ['rs3', 'oldschool'])) {
+            return false;
+        }
+
+        return [$type, $rsn];
     }
 }
