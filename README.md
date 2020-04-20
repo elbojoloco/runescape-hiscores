@@ -1,1 +1,44 @@
-# Test
+# Requirements
+- PHP 7.1 or up
+
+# Installation
+- `composer require elbojoloco/runescape-hiscores`
+
+# Basic usage
+It's very easy to start getting data from the RS3 / OSRS hiscores. All you need to get all stats for a player is this line: (Make sure to `use Elbojoloco\RunescapeHiscores\Runescape;`)
+- RS3: `$player = Runescape::rs3('le me');`
+- OSRS: `$player = Runescape::oldschool('Lynx Titan');`
+
+To dynamically pass a hiscore to use you should use the `get($type, $rsn)` method instead:
+```
+$hiscoreType = $_GET['hiscore_type'];
+$rsn = $_GET['rsn'];
+
+$player = Runescape::get($hiscoreType, $rsn);
+```
+`$type` will only accept the values `rs3` or `oldschool`, case-insensitive. The `$rsn` also must be at least 1 character, to prevent meaningless API calls.
+
+# The Player object
+All 3 of the static methods `rs3()`, `oldschool()` and `get()` will return an instance of `Elbojoloco\RunescapeHiscores\Player`.
+This Player class provides some handy methods to interact with the hiscores data as show in these examples:
+- Retrieving the level of a skill, or multiple skills:
+    - `$player->level('Runecrafting')` // Returns level as a string
+    - `$player->level(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "level"
+- Retrieving the experience of a skill, or multiple skills:
+    - `$player->experience('Overall')` // Returns experience as a string
+    - `$player->experience(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "experience"
+- Retrieving the rank of a skill, or multiple skills:
+    - `$player->rank('Runecrafting')` // Returns rank as a string
+    - `$player->rank(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "rank"
+- Retrieving all metrics of a skill, multiple skills or all skills:
+    - `$player->stats('Overall')` // Returns a skill entry that contains "rank", "level" and "experience"
+    - `$player->stats(['Hitpoints', 'Strength'])` // Returns an array of skill entries
+    - `$player->stats()` // Returns an array of all skill entries including "Overall"
+
+# Contributing
+
+### Pull requests
+Fork the repository and submit a pull request to the "master" branch. Please make sure to follow coding conventions displayed in the existing source.
+
+### Issues
+Try to describe the issue in as much detail as possible and provide examples. General feedback is welcomed and much appreciated too :)
