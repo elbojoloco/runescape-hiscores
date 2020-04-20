@@ -9,7 +9,7 @@
             "name": "Lucas Snel"
         }
     ],
-    "version": "1.0.1",
+    "version": "1.0.2",
     "require": {
         "php": "^7.1.0",
         "kitetail/zttp": "^0.6.0"
