@@ -2,7 +2,7 @@
     "name": "elbojoloco/runescape-hiscores",
     "description": "A minimalistic wrapper for communicating with the OSRS and RS3 hiscores.",
     "type": "library",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "require": {
         "php": "^7.1.0",
         "kitetail/zttp": "^0.6.0"
@@ -10,8 +10,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Lucas Snel",
-            "email": "lucas-snel@live.nl"
+            "name": "Lucas Snel"
         }
     ],
     "autoload": {
