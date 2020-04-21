@@ -43,7 +43,7 @@ This Player class provides some handy methods to interact with the hiscores data
 - `$player->rank('Runecrafting')` // Returns rank as a string
 - `$player->rank(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "rank"
 
-#### Retrieving all metrics of a skill, multiple skills or all skills:
+#### Retrieving all metrics of a skill, multiple skills or all skills
 - `$player->stats('Overall')` // Returns a skill entry that contains "rank", "level" and "experience"
 - `$player->stats(['Hitpoints', 'Strength'])` // Returns an array of skill entries
 - `$player->stats()` // Returns an array of all skill entries including "Overall"
