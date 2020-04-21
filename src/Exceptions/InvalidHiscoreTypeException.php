@@ -2,4 +2,4 @@
 
 namespace Elbojoloco\RunescapeHiscores\Exceptions;
 
-class UnknownHiscoresTypeException extends \Exception {}
+class InvalidHiscoreTypeException extends \Exception {}
