@@ -2,21 +2,22 @@
 
 namespace Elbojoloco\RunescapeHiscores;
 
-class Runescape {
+class Runescape
+{
     /**
      * Retrieves the given player (RSN) from the RS3 hiscores.
      *
      * @param  string  $rsn  The runescape name to look up.
      *
      * @return \Elbojoloco\RunescapeHiscores\Player
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RsnMissingException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidRsnException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException
      */
     static function rs3(string $rsn): Player
     {
-        return (new RunescapeClient())->rs3($rsn);
+        return (new RunescapeClient())->hiscore(RunescapeClient::TYPE_RS3, $rsn);
     }
 
     /**
@@ -25,14 +26,14 @@ class Runescape {
      * @param  string  $rsn  The runescape name to look up.
      *
      * @return \Elbojoloco\RunescapeHiscores\Player
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RsnMissingException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidRsnException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException
      */
     static function oldschool(string $rsn): Player
     {
-        return (new RunescapeClient())->oldschool($rsn);
+        return (new RunescapeClient())->hiscore(RunescapeClient::TYPE_OLDSCHOOL, $rsn);
     }
 
     /**
@@ -42,13 +43,13 @@ class Runescape {
      * @param  string  $rsn  The runescape name to look up.
      *
      * @return \Elbojoloco\RunescapeHiscores\Player
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RsnMissingException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidRsnException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException
      * @throws \Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException
-     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\UnknownHiscoresTypeException
+     * @throws \Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException
      */
     static function get(string $type, string $rsn): Player
     {
-        return (new RunescapeClient())->get($type, $rsn);
+        return (new RunescapeClient())->hiscore($type, $rsn);
     }
 }
