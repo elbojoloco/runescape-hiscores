@@ -200,7 +200,7 @@ class RunescapeClient
             throw new InvalidHiscoreTypeException("The hiscore type is required.");
         }
 
-        if (! $rsn) {
+        if (! $rsn = trim($rsn)) {
             throw new InvalidRsnException('The Runescape name is required.');
         }
 
