@@ -1,6 +1,6 @@
 {
     "name": "elbojoloco/runescape-hiscores",
-    "description": "A minimalistic wrapper for communicating with the OSRS and RS3 hiscores.",
+    "description": "An easy-to-use wrapper for communicating with both the OSRS and RS3 hiscores.",
     "keywords": ["osrs", "rs3", "runescape", "highscores", "hiscores"],
     "type": "library",
     "license": "MIT",
