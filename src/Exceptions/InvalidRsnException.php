@@ -2,4 +2,4 @@
 
 namespace Elbojoloco\RunescapeHiscores\Exceptions;
 
-class RsnMissingException extends \Exception {}
+class InvalidRsnException extends \Exception {}
