@@ -27,6 +27,16 @@ class Player
     }
 
     /**
+     * Get the Player's RSN.
+     *
+     * @return string
+     */
+    public function name(): string
+    {
+        return $this->rsn;
+    }
+
+    /**
      * Get the player's rank of the given skill. Or an array of ranks per skill.
      *
      * @param  string|string[]  $skills
