@@ -64,61 +64,61 @@ class RunescapeClient
      * @var array[]
      */
     private static $osrsMiniGames = [
-        24 => '',
-        25 => 'Bounty Hunter - Hunter',
-        26 => 'Bounty Hunter - Rogue',
-        27 => 'Clue Scrolls (all)',
-        28 => 'Clue Scrolls (beginner)',
-        29 => 'Clue Scrolls (easy)',
-        30 => 'Clue Scrolls (medium)',
-        31 => 'Clue Scrolls (hard)',
-        32 => 'Clue Scrolls (elite)',
-        33 => 'Clue Scrolls (master)',
-        34 => 'LMS Rank',
-        35 => 'Abyssal Sire',
-        36 => 'Alchemical Hydra',
-        37 => 'Barrows Chests',
-        38 => 'Bryophyta',
-        39 => 'Callisto',
-        40 => 'Cerberus',
-        41 => 'Chambers Of Xeric',
-        42 => 'Chambers Of Xeric Challenge Mode',
-        43 => 'Chaos Elemental',
-        44 => 'Chaos Fanatic',
-        45 => 'Commander Zilyana',
-        46 => 'Corporeal Beast',
-        47 => 'Crazy Archaeologist',
-        48 => 'Dagannoth Prime',
-        49 => 'Dagannoth Rex',
-        50 => 'Dagannoth Supreme',
-        51 => 'Deranged Archaeologist',
-        52 => 'General Graardor',
-        53 => 'Giant Mole',
-        54 => 'Grotesque Guardians',
-        55 => 'Hespori',
-        56 => 'Kalphite Queen',
-        57 => 'King Black Dragon',
-        58 => 'Kraken',
-        59 => 'Kreearra',
-        60 => 'Kril Tsutsaroth',
-        61 => 'Mimic',
-        62 => 'Nightmare',
-        63 => 'Obor',
-        64 => 'Sarachnis',
-        65 => 'Scorpia',
-        66 => 'Skotizo',
-        67 => 'The Gauntlet',
-        68 => 'The Corrupted Gauntlet',
-        69 => 'Theater Of Blood',
-        70 => 'Thermonuclear Smoke Devil',
-        71 => 'Tzkal-Zuk',
-        72 => 'Tztok-Jad',
-        73 => 'Venenatis',
-        74 => 'Vetion',
-        75 => 'Vorkath',
-        76 => 'Wintertodt',
-        77 => 'Zalcano',
-        78 => 'Zulrah',
+        '',
+        'Bounty Hunter - Hunter',
+        'Bounty Hunter - Rogue',
+        'Clue Scrolls (all)',
+        'Clue Scrolls (beginner)',
+        'Clue Scrolls (easy)',
+        'Clue Scrolls (medium)',
+        'Clue Scrolls (hard)',
+        'Clue Scrolls (elite)',
+        'Clue Scrolls (master)',
+        'LMS Rank',
+        'Abyssal Sire',
+        'Alchemical Hydra',
+        'Barrows Chests',
+        'Bryophyta',
+        'Callisto',
+        'Cerberus',
+        'Chambers Of Xeric',
+        'Chambers Of Xeric Challenge Mode',
+        'Chaos Elemental',
+        'Chaos Fanatic',
+        'Commander Zilyana',
+        'Corporeal Beast',
+        'Crazy Archaeologist',
+        'Dagannoth Prime',
+        'Dagannoth Rex',
+        'Dagannoth Supreme',
+        'Deranged Archaeologist',
+        'General Graardor',
+        'Giant Mole',
+        'Grotesque Guardians',
+        'Hespori',
+        'Kalphite Queen',
+        'King Black Dragon',
+        'Kraken',
+        'Kreearra',
+        'Kril Tsutsaroth',
+        'Mimic',
+        'Nightmare',
+        'Obor',
+        'Sarachnis',
+        'Scorpia',
+        'Skotizo',
+        'The Gauntlet',
+        'The Corrupted Gauntlet',
+        'Theater Of Blood',
+        'Thermonuclear Smoke Devil',
+        'Tzkal-Zuk',
+        'Tztok-Jad',
+        'Venenatis',
+        'Vetion',
+        'Vorkath',
+        'Wintertodt',
+        'Zalcano',
+        'Zulrah',
     ];
 
     /**
@@ -132,6 +132,11 @@ class RunescapeClient
         25 => 'Dungeoneering',
         26 => 'Divination',
         27 => 'Invention',
+    ];
+
+    private static $minigameStartIndex = [
+        self::TYPE_OLDSCHOOL => 24,
+        self::TYPE_RS3 => 28,
     ];
 
     /**
@@ -273,9 +278,20 @@ class RunescapeClient
         $miniGames = [
             self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
             self::TYPE_RS3 => [],
-        ];
+        ][$this->hiscoreType];
 
-        return $miniGames[$this->hiscoreType];
+        asort($miniGames);
+
+        $start = self::$minigameStartIndex[$this->hiscoreType];
+        $limit = $start + count($miniGames);
+
+        $miniGamesWithKeys = [];
+
+        for ($i = $start; $i++; $i < $limit) {
+            $miniGamesWithKeys[$i] = array_shift($miniGames);
+        }
+
+        return $miniGamesWithKeys;
     }
 
     /**

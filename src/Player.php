@@ -101,7 +101,7 @@ class Player
     /**
      * Get all data (rank and count) for the given mini games or bosses (default all).
      *
-     * @param array|string $miniGames
+     * @param  array|string  $miniGames
      * @return array|mixed
      */
     public function miniGames($miniGames = [])
