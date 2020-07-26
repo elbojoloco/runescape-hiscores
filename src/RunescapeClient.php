@@ -177,6 +177,7 @@ class RunescapeClient
         $stats = [];
 
         $skillCount = count($skills);
+
         for ($i = 0; $i < $skillCount; $i++) {
             [$rank, $level, $experience] = explode(',', $body[$i]);
 
@@ -187,6 +188,7 @@ class RunescapeClient
         $miniGamesStats = [];
 
         $miniGamesCount = count($miniGames);
+
         for ($i = $skillCount; $i < $skillCount + $miniGamesCount; $i++) {
             [$rank, $count] = explode(',', $body[$i]);
 
@@ -287,7 +289,7 @@ class RunescapeClient
 
         $miniGamesWithKeys = [];
 
-        for ($i = $start; $i++; $i < $limit) {
+        for ($i = $start; $i < $limit; $i++) {
             $miniGamesWithKeys[$i] = array_shift($miniGames);
         }
 
