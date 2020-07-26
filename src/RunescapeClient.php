@@ -2,10 +2,10 @@
 
 namespace Elbojoloco\RunescapeHiscores;
 
+use Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException;
 use Elbojoloco\RunescapeHiscores\Exceptions\InvalidRsnException;
 use Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException;
 use Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException;
-use Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException;
 use Zttp\Zttp;
 
 class RunescapeClient
@@ -57,9 +57,9 @@ class RunescapeClient
     /**
      * The complete list of OSRS minigames and bosses in order
      *
-     *  !! WARNING: When Jagex is adding a new boss or minigame,
-     *      they will add it in the middle to keep everything alphabetic
-     *      this is when things go wrong and need to add in the new value here !!
+     * WARNING: When Jagex is adding a new boss or minigame they might
+     * not add it to the end of the array but somewhere in the middle
+     * instead, the correct order needs to be maintained here
      *
      * @var array[]
      */
@@ -185,17 +185,16 @@ class RunescapeClient
         }
 
         $miniGames = $this->miniGames();
-        $miniGamesStats = [];
 
         $miniGamesCount = count($miniGames);
 
         for ($i = $skillCount; $i < $skillCount + $miniGamesCount; $i++) {
             [$rank, $count] = explode(',', $body[$i]);
 
-            $miniGamesStats[$miniGames[$i]] = compact('rank', 'count');
+            $stats[$miniGames[$i]] = compact('rank', 'count');
         }
 
-        return new Player($rsn, $stats, $miniGamesStats);
+        return new Player($rsn, $stats);
     }
 
     /**
@@ -271,29 +270,22 @@ class RunescapeClient
 
     /**
      * Get the mini games based on hiscores type.
+     *
+     * @return string[]
      * @todo Add Runescape 3 minigames
      *
-     * @return array|string[]
      */
     private function miniGames()
     {
         $miniGames = [
-            self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
-            self::TYPE_RS3 => [],
-        ][$this->hiscoreType];
-
-        asort($miniGames);
+                         self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
+                         self::TYPE_RS3 => [],
+                     ][$this->hiscoreType];
 
         $start = self::$minigameStartIndex[$this->hiscoreType];
-        $limit = $start + count($miniGames);
+        $limit = $start + count($miniGames) - 1;
 
-        $miniGamesWithKeys = [];
-
-        for ($i = $start; $i < $limit; $i++) {
-            $miniGamesWithKeys[$i] = array_shift($miniGames);
-        }
-
-        return $miniGamesWithKeys;
+        return array_combine(range($start, $limit), $miniGames);
     }
 
     /**
