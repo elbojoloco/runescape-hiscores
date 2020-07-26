@@ -168,25 +168,16 @@ class RunescapeClient
     {
         $body = $this->sendRequest($rsn);
 
-        $skills = $this->skills();
+        $keys = $this->skills() + $this->miniGames();
+
         $stats = [];
 
-        $skillCount = count($skills);
+        for ($i = 0; $i < count($keys); $i++) {
+            $stat = explode(',', $body[$i]);
 
-        for ($i = 0; $i < $skillCount; $i++) {
-            [$rank, $level, $experience] = explode(',', $body[$i]);
+            $metrics = $this->isSkill($stat) ? ['rank', 'level', 'experience'] : ['rank', 'count'];
 
-            $stats[$skills[$i]] = compact('rank', 'level', 'experience');
-        }
-
-        $miniGames = $this->miniGames();
-
-        $miniGamesCount = count($miniGames);
-
-        for ($i = $skillCount; $i < $skillCount + $miniGamesCount; $i++) {
-            [$rank, $count] = explode(',', $body[$i]);
-
-            $stats[$miniGames[$i]] = compact('rank', 'count');
+            $stats[$keys[$i]] = array_combine($metrics, $stat);
         }
 
         return new Player($rsn, $stats);
@@ -314,5 +305,19 @@ class RunescapeClient
         }
 
         return [$type, $rsn];
+    }
+
+    /**
+     * Determine whether the stat is a skill or not.
+     * Stats will have 3 keys "rank", "experience" and "level".
+     * Minigames will have 2 keys "rank" and "count".
+     *
+     * @param  array  $stat
+     *
+     * @return bool
+     */
+    private function isSkill(array $stat): bool
+    {
+        return count($stat) === 3;
     }
 }
