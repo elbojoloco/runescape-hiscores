@@ -37,39 +37,39 @@ class Player
     }
 
     /**
-     * Get the player's rank of the given skill. Or an array of ranks per skill.
+     * Get the player's rank of the given stat. Or an array of ranks per stat.
      *
-     * @param  string|string[]  $skills
+     * @param  string|string[]  $stats
      *
      * @return array|string
      */
-    public function rank($skills)
+    public function rank($stats)
     {
-        return $this->getStat('rank', $skills);
+        return $this->getStat('rank', $stats);
     }
 
     /**
-     * Get the player's level of the given skill. Or an array of levels per skill.
+     * Get the player's level of the given stat. Or an array of levels per stat.
      *
-     * @param  string|string[]  $skills
+     * @param  string|string[]  $stats
      *
      * @return array|string
      */
-    public function level($skills)
+    public function level($stats)
     {
-        return $this->getStat('level', $skills);
+        return $this->getStat('level', $stats);
     }
 
     /**
-     * Get the player's experience of the given skill. Or an array of eperience per skill.
+     * Get the player's experience of the given stat. Or an array of eperience per stat.
      *
-     * @param  string|string[]  $skills
+     * @param  string|string[]  $stats
      *
      * @return array|string
      */
-    public function experience($skills)
+    public function experience($stats)
     {
-        return $this->getStat('experience', $skills);
+        return $this->getStat('experience', $stats);
     }
 
     /**
@@ -85,20 +85,20 @@ class Player
     }
 
     /**
-     * Get all data (rank, level and experience) for the given skills (default all).
+     * Get all data (rank, level and experience) for the given stats (default all).
      *
-     * @param  array|string  $skills
+     * @param  array|string  $stats
      *
      * @return array|array[]
      */
-    public function stats($skills = [])
+    public function stats($stats = [])
     {
-        if (is_string($skills)) {
-            return $this->stats[$this->formatStat($skills)] ?? null;
+        if (is_string($stats)) {
+            return $this->stats[$this->formatStat($stats)] ?? null;
         }
 
-        if ($skills) {
-            return array_intersect_key($this->stats, array_flip($this->formatStats($skills)));
+        if ($stats) {
+            return array_intersect_key($this->stats, array_flip($this->formatStats($stats)));
         }
 
         return $this->stats;
@@ -134,42 +134,42 @@ class Player
     }
 
     /**
-     * Get a stat or multiple stats from the stats array. Is flexible with skill names and spacing, but won't cover spelling mistakes.
+     * Get a stat or multiple stats from the stats array. Is flexible with stat names and spacing, but won't cover spelling mistakes.
      *
      * @param  string  $metric
-     * @param  array|string  $skills
+     * @param  array|string  $stats
      *
      * @return array|string
      */
-    private function getStat(string $metric, $skills)
+    private function getStat(string $metric, $stats)
     {
-        if (! is_array($skills)) {
-            $skills = [$skills];
+        if (! is_array($stats)) {
+            $stats = [$stats];
         }
 
-        $skills = $this->formatStats($skills);
+        $stats = $this->formatStats($stats);
 
-        $keys = array_flip($skills);
+        $keys = array_flip($stats);
         $stats = array_intersect_key($this->stats, $keys);
 
-        $result = array_combine($skills, array_column($stats, $metric));
+        $result = array_combine($stats, array_column($stats, $metric));
 
         return count($result) === 1 ? array_shift($result) : $result;
     }
 
     /**
-     * Formats every passed skill's name.
+     * Formats every passed stat's name.
      *
-     * @param  array  $skills
+     * @param  array  $stats
      *
      * @return array
      */
-    private function formatStats(array $skills): array
+    private function formatStats(array $stats): array
     {
-        $skills = array_map([$this, 'formatStat'], $skills);
+        $stats = array_map([$this, 'formatStat'], $stats);
 
-        return array_filter($skills, function ($skill) {
-            return array_key_exists($skill, $this->stats);
+        return array_filter($stats, function ($stat) {
+            return array_key_exists($stat, $this->stats);
         });
     }
 
