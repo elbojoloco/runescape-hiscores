@@ -2,10 +2,10 @@
 
 namespace Elbojoloco\RunescapeHiscores;
 
+use Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException;
 use Elbojoloco\RunescapeHiscores\Exceptions\InvalidRsnException;
 use Elbojoloco\RunescapeHiscores\Exceptions\RunescapeHiscoresFailedException;
 use Elbojoloco\RunescapeHiscores\Exceptions\RunescapeNameNotFoundException;
-use Elbojoloco\RunescapeHiscores\Exceptions\InvalidHiscoreTypeException;
 use Zttp\Zttp;
 
 class RunescapeClient
@@ -55,6 +55,73 @@ class RunescapeClient
     ];
 
     /**
+     * The complete list of OSRS minigames and bosses in order
+     *
+     * WARNING: When Jagex is adding a new boss or minigame they might
+     * not add it to the end of the array but somewhere in the middle
+     * instead, the correct order needs to be maintained here
+     *
+     * @var array[]
+     */
+    private static $osrsMiniGames = [
+        '',
+        'Bounty Hunter - Hunter',
+        'Bounty Hunter - Rogue',
+        'Clue Scrolls (all)',
+        'Clue Scrolls (beginner)',
+        'Clue Scrolls (easy)',
+        'Clue Scrolls (medium)',
+        'Clue Scrolls (hard)',
+        'Clue Scrolls (elite)',
+        'Clue Scrolls (master)',
+        'LMS Rank',
+        'Abyssal Sire',
+        'Alchemical Hydra',
+        'Barrows Chests',
+        'Bryophyta',
+        'Callisto',
+        'Cerberus',
+        'Chambers Of Xeric',
+        'Chambers Of Xeric Challenge Mode',
+        'Chaos Elemental',
+        'Chaos Fanatic',
+        'Commander Zilyana',
+        'Corporeal Beast',
+        'Crazy Archaeologist',
+        'Dagannoth Prime',
+        'Dagannoth Rex',
+        'Dagannoth Supreme',
+        'Deranged Archaeologist',
+        'General Graardor',
+        'Giant Mole',
+        'Grotesque Guardians',
+        'Hespori',
+        'Kalphite Queen',
+        'King Black Dragon',
+        'Kraken',
+        'Kreearra',
+        'Kril Tsutsaroth',
+        'Mimic',
+        'Nightmare',
+        'Obor',
+        'Sarachnis',
+        'Scorpia',
+        'Skotizo',
+        'The Gauntlet',
+        'The Corrupted Gauntlet',
+        'Theater Of Blood',
+        'Thermonuclear Smoke Devil',
+        'Tzkal-Zuk',
+        'Tztok-Jad',
+        'Venenatis',
+        'Vetion',
+        'Vorkath',
+        'Wintertodt',
+        'Zalcano',
+        'Zulrah',
+    ];
+
+    /**
      * The list of RS3 skills that should be merged into the OSRS skills for the RS3 hiscores
      *
      * @var string[]
@@ -65,6 +132,11 @@ class RunescapeClient
         25 => 'Dungeoneering',
         26 => 'Divination',
         27 => 'Invention',
+    ];
+
+    private static $minigameStartIndex = [
+        self::TYPE_OLDSCHOOL => 24,
+        self::TYPE_RS3 => 28,
     ];
 
     /**
@@ -104,10 +176,22 @@ class RunescapeClient
         $skills = $this->skills();
         $stats = [];
 
-        for ($i = 0; $i < count($skills); $i++) {
+        $skillCount = count($skills);
+
+        for ($i = 0; $i < $skillCount; $i++) {
             [$rank, $level, $experience] = explode(',', $body[$i]);
 
             $stats[$skills[$i]] = compact('rank', 'level', 'experience');
+        }
+
+        $miniGames = $this->miniGames();
+
+        $miniGamesCount = count($miniGames);
+
+        for ($i = $skillCount; $i < $skillCount + $miniGamesCount; $i++) {
+            [$rank, $count] = explode(',', $body[$i]);
+
+            $stats[$miniGames[$i]] = compact('rank', 'count');
         }
 
         return new Player($rsn, $stats);
@@ -182,6 +266,26 @@ class RunescapeClient
         ];
 
         return $skills[$this->hiscoreType];
+    }
+
+    /**
+     * Get the mini games based on hiscores type.
+     *
+     * @return string[]
+     * @todo Add Runescape 3 minigames
+     *
+     */
+    private function miniGames()
+    {
+        $miniGames = [
+                         self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
+                         self::TYPE_RS3 => [],
+                     ][$this->hiscoreType];
+
+        $start = self::$minigameStartIndex[$this->hiscoreType];
+        $limit = $start + count($miniGames) - 1;
+
+        return array_combine(range($start, $limit), $miniGames);
     }
 
     /**
