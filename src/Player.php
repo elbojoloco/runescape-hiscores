@@ -105,6 +105,30 @@ class Player
     }
 
     /**
+     * Get all data (rank, level, experience) for the given skills (default all).
+     *
+     * @param  array|string  $keys
+     *
+     * @return array|mixed
+     */
+    public function skills($keys = [])
+    {
+        $skills = array_filter($this->stats, function ($stat) {
+            return count($stat) == 3;
+        });
+
+        if (is_string($keys)) {
+            return $skills[$this->formatStat($keys)] ?? null;
+        }
+
+        if ($keys) {
+            return array_intersect_key($skills, array_flip($this->formatStats($keys)));
+        }
+
+        return $skills;
+    }
+
+    /**
      * Get all data (rank and count) for the given mini games or bosses (default all).
      *
      * @param  array|string  $keys
