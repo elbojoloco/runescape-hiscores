@@ -15,15 +15,21 @@ class Player
     private $stats;
 
     /**
+     * @var array[]
+     */
+    private $miniGames;
+
+    /**
      * Player constructor.
      *
      * @param  string  $rsn
      * @param  array  $stats
      */
-    public function __construct(string $rsn, array $stats)
+    public function __construct(string $rsn, array $stats, array $miniGames)
     {
         $this->rsn = $rsn;
         $this->stats = $stats;
+        $this->miniGames = $miniGames;
     }
 
     /**
@@ -90,6 +96,25 @@ class Player
         }
 
         return $this->stats;
+    }
+
+    /**
+     * Get all data (rank and count) for the given mini games or bosses (default all).
+     *
+     * @param array|string $miniGames
+     * @return array|mixed
+     */
+    public function miniGames($miniGames = [])
+    {
+        if (is_string($miniGames)) {
+            return $this->miniGames[$this->formatSkill($miniGames)] ?? null;
+        }
+
+        if ($miniGames) {
+            return array_intersect_key($this->miniGames, array_flip($this->formatSkills($miniGames)));
+        }
+
+        return $this->miniGames;
     }
 
     /**

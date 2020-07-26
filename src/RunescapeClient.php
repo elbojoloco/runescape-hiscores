@@ -55,6 +55,73 @@ class RunescapeClient
     ];
 
     /**
+     * The complete list of OSRS minigames and bosses in order
+     *
+     *  !! WARNING: When Jagex is adding a new boss or minigame,
+     *      they will add it in the middle to keep everything alphabetic
+     *      this is when things go wrong and need to add in the new value here !!
+     *
+     * @var array[]
+     */
+    private static $osrsMiniGames = [
+        24 => '',
+        25 => 'Bounty Hunter - Hunter',
+        26 => 'Bounty Hunter - Rogue',
+        27 => 'Clue Scrolls (all)',
+        28 => 'Clue Scrolls (beginner)',
+        29 => 'Clue Scrolls (easy)',
+        30 => 'Clue Scrolls (medium)',
+        31 => 'Clue Scrolls (hard)',
+        32 => 'Clue Scrolls (elite)',
+        33 => 'Clue Scrolls (master)',
+        34 => 'LMS Rank',
+        35 => 'Abyssal Sire',
+        36 => 'Alchemical Hydra',
+        37 => 'Barrows Chests',
+        38 => 'Bryophyta',
+        39 => 'Callisto',
+        40 => 'Cerberus',
+        41 => 'Chambers Of Xeric',
+        42 => 'Chambers Of Xeric Challenge Mode',
+        43 => 'Chaos Elemental',
+        44 => 'Chaos Fanatic',
+        45 => 'Commander Zilyana',
+        46 => 'Corporeal Beast',
+        47 => 'Crazy Archaeologist',
+        48 => 'Dagannoth Prime',
+        49 => 'Dagannoth Rex',
+        50 => 'Dagannoth Supreme',
+        51 => 'Deranged Archaeologist',
+        52 => 'General Graardor',
+        53 => 'Giant Mole',
+        54 => 'Grotesque Guardians',
+        55 => 'Hespori',
+        56 => 'Kalphite Queen',
+        57 => 'King Black Dragon',
+        58 => 'Kraken',
+        59 => 'Kreearra',
+        60 => 'Kril Tsutsaroth',
+        61 => 'Mimic',
+        62 => 'Nightmare',
+        63 => 'Obor',
+        64 => 'Sarachnis',
+        65 => 'Scorpia',
+        66 => 'Skotizo',
+        67 => 'The Gauntlet',
+        68 => 'The Corrupted Gauntlet',
+        69 => 'Theater Of Blood',
+        70 => 'Thermonuclear Smoke Devil',
+        71 => 'Tzkal-Zuk',
+        72 => 'Tztok-Jad',
+        73 => 'Venenatis',
+        74 => 'Vetion',
+        75 => 'Vorkath',
+        76 => 'Wintertodt',
+        77 => 'Zalcano',
+        78 => 'Zulrah',
+    ];
+
+    /**
      * The list of RS3 skills that should be merged into the OSRS skills for the RS3 hiscores
      *
      * @var string[]
@@ -104,13 +171,24 @@ class RunescapeClient
         $skills = $this->skills();
         $stats = [];
 
-        for ($i = 0; $i < count($skills); $i++) {
+        $skillCount = count($skills);
+        for ($i = 0; $i < $skillCount; $i++) {
             [$rank, $level, $experience] = explode(',', $body[$i]);
 
             $stats[$skills[$i]] = compact('rank', 'level', 'experience');
         }
 
-        return new Player($rsn, $stats);
+        $miniGames = $this->miniGames();
+        $miniGamesStats = [];
+
+        $miniGamesCount = count($miniGames);
+        for ($i = $skillCount; $i < $skillCount + $miniGamesCount; $i++) {
+            [$rank, $count] = explode(',', $body[$i]);
+
+            $miniGamesStats[$miniGames[$i]] = compact('rank', 'count');
+        }
+
+        return new Player($rsn, $stats, $miniGamesStats);
     }
 
     /**
@@ -182,6 +260,22 @@ class RunescapeClient
         ];
 
         return $skills[$this->hiscoreType];
+    }
+
+    /**
+     * Get the mini games based on hiscores type.
+     * @todo Add Runescape 3 minigames
+     *
+     * @return array|string[]
+     */
+    private function miniGames()
+    {
+        $miniGames = [
+            self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
+            self::TYPE_RS3 => [],
+        ];
+
+        return $miniGames[$this->hiscoreType];
     }
 
     /**
