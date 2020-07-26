@@ -134,11 +134,6 @@ class RunescapeClient
         27 => 'Invention',
     ];
 
-    private static $minigameStartIndex = [
-        self::TYPE_OLDSCHOOL => 24,
-        self::TYPE_RS3 => 28,
-    ];
-
     /**
      * Validate the inputs and call the API.
      *
@@ -278,11 +273,13 @@ class RunescapeClient
     private function miniGames()
     {
         $miniGames = [
-                         self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
-                         self::TYPE_RS3 => [],
-                     ][$this->hiscoreType];
+            self::TYPE_OLDSCHOOL => self::$osrsMiniGames,
+            self::TYPE_RS3 => [],
+        ];
 
-        $start = self::$minigameStartIndex[$this->hiscoreType];
+        $miniGames = $miniGames[$this->hiscoreType];
+
+        $start = count($this->skills());
         $limit = $start + count($miniGames) - 1;
 
         return array_combine(range($start, $limit), $miniGames);
