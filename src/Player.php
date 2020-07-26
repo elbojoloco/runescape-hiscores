@@ -15,21 +15,15 @@ class Player
     private $stats;
 
     /**
-     * @var array[]
-     */
-    private $miniGames;
-
-    /**
      * Player constructor.
      *
      * @param  string  $rsn
      * @param  array  $stats
      */
-    public function __construct(string $rsn, array $stats, array $miniGames)
+    public function __construct(string $rsn, array $stats)
     {
         $this->rsn = $rsn;
         $this->stats = $stats;
-        $this->miniGames = $miniGames;
     }
 
     /**
@@ -79,6 +73,18 @@ class Player
     }
 
     /**
+     * Get the player's kill count for the given boss(es).
+     *
+     * @param  string|string[]  $bosses
+     *
+     * @return array|string
+     */
+    public function count($bosses)
+    {
+        return $this->getStat('count', $bosses);
+    }
+
+    /**
      * Get all data (rank, level and experience) for the given skills (default all).
      *
      * @param  array|string  $skills
@@ -88,11 +94,11 @@ class Player
     public function stats($skills = [])
     {
         if (is_string($skills)) {
-            return $this->stats[$this->formatSkill($skills)] ?? null;
+            return $this->stats[$this->formatStat($skills)] ?? null;
         }
 
         if ($skills) {
-            return array_intersect_key($this->stats, array_flip($this->formatSkills($skills)));
+            return array_intersect_key($this->stats, array_flip($this->formatStats($skills)));
         }
 
         return $this->stats;
@@ -101,20 +107,30 @@ class Player
     /**
      * Get all data (rank and count) for the given mini games or bosses (default all).
      *
-     * @param  array|string  $miniGames
+     * @param  array|string  $keys
+     *
      * @return array|mixed
      */
-    public function miniGames($miniGames = [])
+    public function miniGames($keys = [])
     {
-        if (is_string($miniGames)) {
-            return $this->miniGames[$this->formatSkill($miniGames)] ?? null;
+        $miniGames = array_filter($this->stats, function ($stat) {
+            return count($stat) == 2;
+        });
+
+        if (is_string($keys)) {
+            return $miniGames[$this->formatStat($keys)] ?? null;
         }
 
-        if ($miniGames) {
-            return array_intersect_key($this->miniGames, array_flip($this->formatSkills($miniGames)));
+        if ($keys) {
+            return array_intersect_key($miniGames, array_flip($this->formatStats($keys)));
         }
 
-        return $this->miniGames;
+        return $miniGames;
+    }
+
+    public function bosses($bosses = [])
+    {
+        return $this->miniGames($bosses);
     }
 
     /**
@@ -131,7 +147,7 @@ class Player
             $skills = [$skills];
         }
 
-        $skills = $this->formatSkills($skills);
+        $skills = $this->formatStats($skills);
 
         $keys = array_flip($skills);
         $stats = array_intersect_key($this->stats, $keys);
@@ -148,9 +164,9 @@ class Player
      *
      * @return array
      */
-    private function formatSkills(array $skills): array
+    private function formatStats(array $skills): array
     {
-        $skills = array_map([$this, 'formatSkill'], $skills);
+        $skills = array_map([$this, 'formatStat'], $skills);
 
         return array_filter($skills, function ($skill) {
             return array_key_exists($skill, $this->stats);
@@ -158,23 +174,20 @@ class Player
     }
 
     /**
-     * Formats a skill name to match correct format.
-     * E.g.:
-     * "Hit Points" -> "Hitpoints"
-     * " attack " -> "Attack"
+     * Formats a stat name to match correct format.
      *
-     * @param  string  $skill
+     * @param  string  $stat
      *
      * @return string
      */
-    private function formatSkill(string $skill): string
+    private function formatStat(string $stat): string
     {
-        // First, remove all whitespace from the skill name.
-        // Then, lowercase the entire skill.
-        // Lastly, uppercase the first letter, to match the expected Skill key.
-        return ucfirst(
+        // First, trim all whitespace from the stat name.
+        // Then, lowercase the entire stat.
+        // Finally, uppercase the first letter of every word to match the expected Stat key.
+        return ucwords(
             strtolower(
-                preg_replace('/\s/', '', $skill)
+                trim($stat)
             )
         );
     }
