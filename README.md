@@ -39,14 +39,17 @@ This Player class provides some handy methods to interact with the hiscores data
 - `$player->experience('Overall')` // Returns experience as a string
 - `$player->experience(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "experience"
 
-#### Retrieving the rank of a skill, or multiple skills
+#### Retrieving the rank for a skill, boss or minigame
 - `$player->rank('Runecrafting')` // Returns rank as a string
-- `$player->rank(['Runecrafting', 'Mining', 'Construction'])` // Returns an associative array of "skill" => "rank"
+- `$player->rank(['Runecrafting', 'Zulrah', 'Construction'])` // Returns an associative array of "stat" => "rank"
 
-#### Retrieving all metrics of a skill, multiple skills or all skills
+#### Retrieving all metrics of a skill, boss or minigame
 - `$player->stats('Overall')` // Returns a skill entry that contains "rank", "level" and "experience"
+- `$player->stats('Zulrah')` // Returns a boss/minigame entry that contains "rank" and "count"
 - `$player->stats(['Hitpoints', 'Strength'])` // Returns an array of skill entries
-- `$player->stats()` // Returns an array of all skill entries including "Overall"
+- `$player->miniGames(['Clue scrolls (beginner)', 'Vorkath'])` // Returns an array of bosses/minigames. For a full list of accepted keys please refer to [RunescapeClient.php](https://github.com/elbojoloco/runescape-hiscores/blob/master/src/RunescapeClient.php#L57).
+- `$player->bosses()` is an alias for `$player->miniGames()`
+- `$player->stats()` // Returns an array of all stat entries
 
 # Contributing
 
