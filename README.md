@@ -1,3 +1,6 @@
+[![Packagist Version](https://img.shields.io/packagist/v/elbojoloco/runescape-hiscores)](https://packagist.org/packages/elbojoloco/runescape-hiscores)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/elbojoloco/runescape-hiscores)](https://packagist.org/packages/elbojoloco/runescape-hiscores/stats)
+
 
 # Requirements
 - PHP 7.1 or up
